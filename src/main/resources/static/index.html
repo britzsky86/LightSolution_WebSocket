@@ -10,10 +10,6 @@
 <script>
 $(document).ready(function() {
     
-    
-    
-    console.log("111111111111")
-    
     $.ajax({ 
 		type:"POST", 
 		url:"http://api.lightsolution.kr/App/IsConnectIDCServer",
@@ -22,20 +18,13 @@ $(document).ready(function() {
     	    console.log(result)
     	    
     	    if (result) { } 
+    	    
     	    else { 
-    			alert("불러오기 실패"); 
+    			 
     		} 
     	} 
     });
-    
-    console.log("2222222222222")
-    
 });
-	/* document.addEventListener("DOMContentLoaded", function(){
-        console.log("asdasdasd")
-
-      }); */
 </script>
-<!-- <script type="js/main.js"></script> -->
 </body>
 </html>
