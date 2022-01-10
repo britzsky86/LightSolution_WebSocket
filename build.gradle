@@ -46,5 +46,4 @@ tasks.jar {
 
 tasks.bootJar {
     enabled = true
-    mainClassName = "com.posmania.kr.LightSolutionWebSocketApplication"
 }
