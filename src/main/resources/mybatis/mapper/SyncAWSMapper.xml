@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.posmania.kr.Mapper.SyncAWSMapper">
+
+<insert id="syncAWSStatus" parameterType="Map">
+  
+  	CALL PmKioskAWS.XUpsert_SyncAWSStatus (${StoreID}, ${StatusCD}, #{StatusMsg})
+
+</insert>
+
+<insert id="syncAWSDMLStatus" parameterType="Map">
+  
+  	CALL PmKioskAWS.XUpdate_SyncAWSDMLStatus (${StoreID}, ${AppliedAwsSyncID}, ${MaxSyncID}, ${StatusCD})
+
+</insert>
+
+<insert id="syncAWSMaxID" parameterType="Map">
+  
+  	CALL PmKioskAWS.XUpdate_SyncAWSMaxID (${StoreID}, ${SyncID})
+
+</insert>
+
+<insert id="SyncAWSLastID" parameterType="Map">
+  
+  	CALL PmKioskAWS.XUpdate_SyncAWSLastID (${StoreID}, ${SyncID})
+
+</insert>
+
+<insert id="syncAWSApplyID" parameterType="Map">
+  
+  	CALL PmKioskAWS.XUpdate_SyncApplyID (${StoreID}, ${SyncID})
+
+</insert>
+
+</mapper>

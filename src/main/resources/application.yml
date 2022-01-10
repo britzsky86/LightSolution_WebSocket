@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:mysql://222.98.245.65:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: pass_posmania4906!
+    hikari:
+      maximumPoolSize: 100
+      connectionTestQuery: SELECT 1
+  jpa:
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties: 
+      hibernate:
+        format_sql: true 
+             
+mybatis: 
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  
+cloud:
+  aws:
+    credentials:
+      accesskey: AKIAVWERPQU6TIVNGBNG
+      secretkey: 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   
+    region:
+      static: ap-northeast-2c
+      
+server:
+  port: 8080
+  servlet:
+    context-path: /

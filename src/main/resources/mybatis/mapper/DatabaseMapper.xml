@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.posmania.kr.Mapper.DatabaseMapper">
+
+<select id="searchDml" parameterType="Map" resultType="Map">
+  
+  	CALL PmKioskAWS.XSelect_GetSyncDML (${StoreID}, ${AppliedAwsSyncID})
+
+</select>
+
+<select id="searchMaxVersion" resultType="String">
+  
+  	SELECT IFNULL(MAX(PosManiaVersion), '') AS PosManiaVersion
+    FROM PmKioskAWS.TbVersionConfig;
+	
+</select>
+
+</mapper>

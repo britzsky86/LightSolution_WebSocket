@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.posmania.kr.Mapper.DownloadMapper">
+
+<select id="searchDml" parameterType="Map" resultType="Map">
+  
+  	CALL PmKioskAWS.XSelect_GetSyncDML (${StoreID}, ${AppliedAwsSyncID})
+
+</select>
+
+<select id="getMaxSyncID" parameterType="Map" resultType="biginteger">
+  
+  	SELECT MaxNewAwsSyncID AS MaxSyncID
+    FROM PmKioskAWS.TbSyncAwsST
+    WHERE StoreID = ${StoreID};
+
+</select>
+
+</mapper>
