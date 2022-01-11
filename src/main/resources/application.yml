@@ -30,6 +30,6 @@ cloud:
       static: ap-northeast-2c
       
 server:
-  port: 8080
+  port: 9090
   servlet:
     context-path: /
