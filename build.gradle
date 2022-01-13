@@ -32,6 +32,8 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	implementation 'ca.pjer:logback-awslogs-appender:1.4.0'
 }
 
 test {
