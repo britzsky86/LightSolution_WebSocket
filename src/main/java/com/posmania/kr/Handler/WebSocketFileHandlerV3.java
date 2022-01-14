@@ -289,7 +289,34 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		
 		logger.info("FirstFolder path == ", path);
 		
-		File Folder = new File(firstPath);
+		File newFile = new File(firstPath); 
+		
+		try {
+			
+			if(!newFile.exists()){
+				
+				boolean result = newFile.mkdir(); 
+				
+				Runtime.getRuntime().exec("chmod 777 " + firstPath); 
+				newFile.setExecutable(true, false); 
+				newFile.setReadable(true, false); 
+				newFile.setWritable(true, false); 
+				newFile.createNewFile();
+				
+				if (result) {
+					logger.info("Folder Create success");
+				} else {
+					logger.info("Folder Create failed");
+				}
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
+		/*File Folder = new File(firstPath);
 		
 		if (!Folder.exists()) {
 			
@@ -308,7 +335,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				e.getStackTrace();
 				
 			}        
-		}
+		}*/
 		
 		return firstPath;
 	}
@@ -324,9 +351,50 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		
 		logger.info("CreateFolder path {} ", path.toString());
 		
+		File newFile = new File(path+""+fileName); 
+		
+		/*try {
+			
+			if(!newFile.exists()){
+				
+				newFile.mkdir(); 
+				
+				Runtime.getRuntime().exec("chmod 777 " + path+""+fileName); 
+				newFile.setExecutable(true, false); 
+				newFile.setReadable(true, false); 
+				newFile.setWritable(true, false); 
+				newFile.createNewFile();
+				
+			}
+		} catch (IOException e) {
+			logger.error("CreateFolder error path {} ", e.getMessage());
+			bResult = false;
+		} */
+		
 		boolean bResult = false;
 		
-		File Folder = new File(path+""+fileName);
+		if (!newFile.exists()) {
+			
+			try {
+			    
+				bResult = newFile.mkdir(); //폴더 생성합니다.
+				Runtime.getRuntime().exec("chmod 777 " + path+""+fileName); 
+				newFile.setExecutable(true, false); 
+				newFile.setReadable(true, false); 
+				newFile.setWritable(true, false); 
+				newFile.createNewFile();
+			    
+			} catch(Exception e) {
+			    
+				logger.error("CreateFolder error path {} ", e.getMessage());
+				bResult = false;
+			}        
+		}else {
+			
+			bResult = false;
+		}
+		
+		/*File Folder = new File(path+""+fileName);
 		
 		if (!Folder.exists()) {
 			
@@ -342,7 +410,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		}else {
 			
 			bResult = false;
-		}
+		}*/
 		
 		return bResult;
 	}
