@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
 	implementation 'org.apache.commons:commons-compress:1.18'
 	implementation 'net.sf.sevenzipjbinding:sevenzipjbinding:16.02-2.01'
+	implementation 'org.tukaani:xz:1.8'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 	runtimeOnly 'mysql:mysql-connector-java'
