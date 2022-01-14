@@ -58,7 +58,7 @@
 <!--  &lt;!&ndash; A console output &ndash;&gt;-->
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d{yyyyMMdd'T'HHmmss} %thread %level %logger{15} %msg%n</pattern>
+      <pattern>%instanceId-%d{yyyyMMdd'T'HHmmss} %thread %level %logger{15} %msg%n</pattern>
     </encoder>
   </appender>
 
