@@ -103,7 +103,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				String firstPath = firstFolder(folderPath);
 				logger.info("first path == ", firstPath);*/
 				
-				String staticPath = "/usr/share/tomcat/webapps";
+				String staticPath = "/usr/share";
 				String firstPath = firstFolder(staticPath);
 				
 				boolean bResult = false;
