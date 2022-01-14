@@ -19,7 +19,7 @@
 
     <!-- Nice layout pattern -->
     <layout>
-      <pattern>%instanceId-%d{yyyyMMdd'T'HHmmss} %thread %level %logger{15} %msg%n</pattern>
+      <pattern>%d{yyyyMMdd'T'HHmmss} %thread %level %logger{15} %msg%n</pattern>
     </layout>
 
     <!-- Hardcoded Log Group Name -->
