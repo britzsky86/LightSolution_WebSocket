@@ -1,4 +1,7 @@
 spring:
+  devtools:
+    restart:
+      enabled: true
   datasource:
     url: jdbc:mysql://222.98.245.65:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -29,7 +32,7 @@ cloud:
     region:
       static: ap-northeast-2c
       
-//server:
-//  port: 13270
-//  servlet:
-//    context-path: /
+server:
+  port: 13270
+  servlet:
+    context-path: /
