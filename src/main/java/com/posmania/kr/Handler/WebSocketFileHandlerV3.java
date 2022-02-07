@@ -213,15 +213,22 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				    		
 				    	} catch (Exception e) {
 				    		
+				    		String strErrMsg = "";
+				    		
 				    		bSave = false;
 				    		/*iErrorCnt++;*/
 				    		
-				    		errorList.add(e.toString());
+				    		errorList.add(e.getMessage().toString());
 				    		
-				    		// UPDATE TbSyncAwsST SET StatusCD = 3 WHERE StoreID = FileName 로 저장해야 함. (에러발생) 
-				    		syncAWS.syncAWSStatus(storeID, 3, errorList.toString());
+				    		logger.error("errorList Msg {}", errorList.toString());
 				    		
-				    		e.printStackTrace();
+				    		if (errorList.isEmpty()) {
+				    			// UPDATE TbSyncAwsST SET StatusCD = 3 WHERE StoreID = FileName 로 저장해야 함. (에러발생) 
+					    		syncAWS.syncAWSStatus(storeID, 3, strErrMsg);
+				    		} else {
+				    			// UPDATE TbSyncAwsST SET StatusCD = 3 WHERE StoreID = FileName 로 저장해야 함. (에러발생) 
+					    		syncAWS.syncAWSStatus(storeID, 3, errorList.toString());
+				    		}
 				    	
 				    	} finally {
 				    		
