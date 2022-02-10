@@ -14,7 +14,7 @@
 
     <!-- Send only WARN and above -->
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      <level>INFO</level>
+      <level>ERROR</level>
     </filter>
 
     <!-- Nice layout pattern -->
