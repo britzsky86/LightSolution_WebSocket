@@ -32,7 +32,3 @@ cloud:
     region:
       static: ap-northeast-2c
       
-server:
-  port: 13270
-  servlet:
-    context-path: /
