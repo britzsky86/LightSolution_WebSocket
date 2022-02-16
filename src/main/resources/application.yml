@@ -23,12 +23,12 @@ spring:
              
 mybatis: 
   mapper-locations: classpath:mybatis/mapper/*.xml
-  
+ 
 cloud:
   aws:
     credentials:
-      accesskey: AKIAVWERPQU6TIVNGBNG
-      secretkey: 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   
+      accesskey: AKIA36XY6AUNW6W5FG6E
+      secretkey: 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   
     region:
       static: ap-northeast-2c
       
