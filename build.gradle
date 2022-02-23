@@ -30,7 +30,7 @@ dependencies {
 	implementation 'org.tukaani:xz:1.8'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
-	runtimeOnly 'mysql:mysql-connector-java:5.1.48'
+	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'ch.qos.logback:logback-classic:1.2.3'
