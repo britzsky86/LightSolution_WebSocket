@@ -4,11 +4,11 @@ spring:
       enabled: true
   datasource:
     url: jdbc:mysql://alphacashier-asp-db-instance.ctnru7tj6gzl.ap-northeast-2.rds.amazonaws.com:4406/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
     username: admin
     password: pass_softlogic
     hikari:
-      maximumPoolSize: 100
+      maximumPoolSize: 1000
       connectionTestQuery: SELECT 1
   jpa:
     show-sql: true
