@@ -56,7 +56,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	// ConcurrentModificationException 은 for loop 에서 서로 다른 쓰레드가 List에 간섭하고 데이터 조작을 할 때, 발생한다고 알려져 있음.
 	// 보통 콜렉션 객체에서는 IndexOutOfBoundException 이 발생하지만 ConcurrentModificationException 는 for loop 동작방식과 밀접한 관련이 있음.
 	// 참고 : https://m.blog.naver.com/tmondev/220393974518
-	private static final List<WebSocketSession> lists = new CopyOnWriteArrayList<>();
+	private final List<WebSocketSession> lists = new CopyOnWriteArrayList<>();
 	
 	@Autowired
 	private UploadController upload;	// 신규데이터 업로드.
@@ -154,8 +154,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						logger.info("Down(202) Result {}", message);
 						// 전송.
 						sess.sendMessage(message);
-						sess.close();
-						lists.remove(sess);
+						/*sess.close();*/
+						/*lists.remove(sess);*/
 						
 						logger.info("Down(202) End");
 						
@@ -186,8 +186,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					logger.info("Version Check(203) Result {}", version);
 					
 					sess.sendMessage(new TextMessage(version));
-					sess.close();
-					lists.remove(sess);
+					/*sess.close();*/
+					/*lists.remove(sess);*/
 					
 					logger.info("Version Check(203) End");
 					
@@ -206,8 +206,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					logger.info("SyncID Check(204) Result {}", resultStr);
 					
 					sess.sendMessage(new TextMessage(resultStr));
-					sess.close();
-					lists.remove(sess);
+					/*sess.close();*/
+					/*lists.remove(sess);*/
 					
 					logger.info("SyncID Check(204) End");
 					
@@ -234,8 +234,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						
 						logger.info("Reset(205) Result {}", resetResult);
 						sess.sendMessage(new TextMessage(resetResult));
-						sess.close();
-						lists.remove(sess);
+						/*sess.close();*/
+						/*lists.remove(sess);*/
 						
 						logger.info("Reset(205) End");
 						
@@ -245,8 +245,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						logger.error("Reset(205) Error {} ", e.getMessage());
 						syncAWS.syncAWSStatus(element.getAsJsonObject().get("StoreID").toString(), 3, "Reset 실패");
 						sess.sendMessage(new TextMessage(resetResult));
-						sess.close();
-						lists.remove(sess);
+						/*sess.close();*/
+						/*lists.remove(sess);*/
 					}
 					
 				} else if(RequestType.NEW.getValue() == iType) {
@@ -261,8 +261,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						jsonObj.addProperty("MSG", "성공");
 						
 						sess.sendMessage(new TextMessage(jsonObj.toString()));
-						sess.close();
-						lists.remove(sess);
+						/*sess.close();*/
+						/*lists.remove(sess);*/
 						
 						logger.info("NewData(206) End");
 						
@@ -273,8 +273,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						
 						logger.error("NewData(206) Error {} ", element);
 						sess.sendMessage(new TextMessage(jsonObj.toString()));
-						sess.close();
-						lists.remove(sess);
+						/*sess.close();*/
+						/*lists.remove(sess);*/
 					}
 				}
 			}
