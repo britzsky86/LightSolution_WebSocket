@@ -27,4 +27,4 @@ else
 fi
 
 echo "> $APPLICATION_JAR 배포"
-nohup java -Xms2048m -Xmx4096m -jar $APPLICATION_JAR > /dev/null 2> /dev/null < /dev/null &
+nohup java -Xms2048m -Xmx8192m -jar $APPLICATION_JAR > /dev/null 2> /dev/null < /dev/null &
