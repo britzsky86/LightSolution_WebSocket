@@ -14,6 +14,7 @@ public class DatabaseController {
 	
 	public String handleAction(WebSocketSession session) {
 		
+		
 		return ds.searchMaxVersion(session);
 	}
 
