@@ -95,35 +95,11 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				
 				ByteBuffer byteBuffer = message.getPayload();
 				
-				Path path = Paths.get("");
-				
-				// 윈도우 환경에서의 구성.
-				/*String folderPath = path.toAbsolutePath().toString();
-				logger.info("folder path == ", folderPath);
-				String firstPath = firstFolder(folderPath);
-				logger.info("first path == ", firstPath);*/
-				
-				String staticPath = "/usr/share";
 				String firstPath = "/usr/share/output";
-				/*String firstPath = firstFolder(staticPath);*/
 				
 				boolean bResult = false;
 				
 				List<String> errorList = new ArrayList<String>();
-				
-				// 윈도우 환경에서의 구성.
-				// 전달받은 파일명으로 폴더 생성.
-				/*if(createFolder(firstPath+"\\")) {
-					
-					String folderPathV2 = firstPath+"\\"+fileName+"\\";
-					
-					File file = new File(folderPathV2+fileName);
-					bResult = true;
-					
-					// 압축파일 생성.
-					if(create7Zip(byteBuffer, file)) 
-						bResult = true;
-				}*/
 				
 				if(createFolder(firstPath+"/")) {
 					
@@ -135,6 +111,23 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 					// 압축파일 생성.
 					if(create7Zip(byteBuffer, file)) 
 						bResult = true;
+					else
+						bResult = false;
+				} else {
+					
+					try {
+						
+						sess.close();
+			        	lists.remove(sess);
+			        	logger.error("File size 0byte StoreID :: ", fileName);
+			        	return;
+			        	
+					} catch (Exception e) {
+						// TODO: handle exception
+						e.printStackTrace();
+					}
+					
+					return;
 				}
 				
 				// 폴더 및 압축파일 생성이 모두 정상일 때, DB에 적용.
@@ -258,10 +251,12 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				    	}
 				    	
 				    	if(deleteDirectoryAndFiles(folderPathV3)) {	
-				    		
-				    		
+				    		logger.error("Directory Delete Success StoreID :: ", storeID);
 				    	}
 			        }
+			        
+				} else {
+					logger.error("File size 0byte StoreID :: ", fileName);
 				}	
 			}
 		}
@@ -290,65 +285,6 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		
 	}
 	
-	public String firstFolder(String path) {
-		
-		// 윈도우 환경에서의 구성.
-		/*String firstPath = path + "\\" + "output";*/
-		String firstPath = path + "/" + "output";
-		
-		logger.info("FirstFolder path == ", path);
-		
-		File newFile = new File(firstPath); 
-		
-		try {
-			
-			if(!newFile.exists()){
-				
-				boolean result = newFile.mkdir(); 
-				
-				Runtime.getRuntime().exec("chmod 777 " + firstPath); 
-				newFile.setExecutable(true, false); 
-				newFile.setReadable(true, false); 
-				newFile.setWritable(true, false); 
-				newFile.createNewFile();
-				
-				if (result) {
-					logger.info("Folder Create success");
-				} else {
-					logger.info("Folder Create failed");
-				}
-				
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-		
-		/*File Folder = new File(firstPath);
-		
-		if (!Folder.exists()) {
-			
-			try {
-			    
-				boolean result = Folder.mkdir(); //폴더 생성합니다.
-			    
-				if (result) {
-					logger.info("Folder Create success");
-				} else {
-					logger.info("Folder Create failed");
-				}
-				
-			} catch(Exception e) {
-			    
-				e.getStackTrace();
-				
-			}        
-		}*/
-		
-		return firstPath;
-	}
-	
 	/**
 	  * @Method Name : createFolder
 	  * @작성일 : 2021. 9. 8.
@@ -362,25 +298,11 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		
 		File newFile = new File(path+""+fileName); 
 		
-		/*try {
-			
-			if(!newFile.exists()){
-				
-				newFile.mkdir(); 
-				
-				Runtime.getRuntime().exec("chmod 777 " + path+""+fileName); 
-				newFile.setExecutable(true, false); 
-				newFile.setReadable(true, false); 
-				newFile.setWritable(true, false); 
-				newFile.createNewFile();
-				
-			}
-		} catch (IOException e) {
-			logger.error("CreateFolder error path {} ", e.getMessage());
-			bResult = false;
-		} */
-		
 		boolean bResult = false;
+		
+		if (newFile.length() == 0) {
+			return bResult;
+		}
 		
 		if (!newFile.exists()) {
 			
@@ -402,24 +324,6 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 			
 			bResult = false;
 		}
-		
-		/*File Folder = new File(path+""+fileName);
-		
-		if (!Folder.exists()) {
-			
-			try {
-			    
-				bResult = Folder.mkdir(); //폴더 생성합니다.
-			    
-			} catch(Exception e) {
-			    
-				logger.error("CreateFolder error path {} ", e.getMessage());
-				bResult = false;
-			}        
-		}else {
-			
-			bResult = false;
-		}*/
 		
 		return bResult;
 	}
@@ -446,8 +350,15 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 			byteBuffer.compact(); //파일을 복사한다.
 			outChannel.write(byteBuffer); //파일을 쓴다.
 			
-			bResult = true;
-			logger.info("Create 7Zip Success");
+			long bytes = outChannel.size();
+			
+			if(bytes == 0 || file.length() == 0) {
+				logger.info("Create 7Zip Byte 0");
+				return bResult;
+			} else {
+				logger.info("Create 7Zip Success");
+				bResult = true;
+			}
 			
 		}catch(Exception e) {
 			e.printStackTrace();
