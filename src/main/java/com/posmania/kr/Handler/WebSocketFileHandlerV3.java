@@ -106,28 +106,25 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 					String folderPathV2 = firstPath+"/"+fileName+"/";
 					
 					File file = new File(folderPathV2+fileName);
-					bResult = true;
 					
 					// 압축파일 생성.
 					if(create7Zip(byteBuffer, file)) 
 						bResult = true;
 					else
 						bResult = false;
+					
 				} else {
 					
 					try {
 						
+						logger.error("File size 0byte StoreID :: {} ", fileName);
 						sess.close();
 			        	lists.remove(sess);
-			        	logger.error("File size 0byte StoreID :: ", fileName);
-			        	return;
 			        	
 					} catch (Exception e) {
 						// TODO: handle exception
 						e.printStackTrace();
 					}
-					
-					return;
 				}
 				
 				// 폴더 및 압축파일 생성이 모두 정상일 때, DB에 적용.
@@ -256,7 +253,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 			        }
 			        
 				} else {
-					logger.error("File size 0byte StoreID :: ", fileName);
+					logger.error("File size 0byte StoreID :: {} ", fileName);
 				}	
 			}
 		}
@@ -300,9 +297,8 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		
 		boolean bResult = false;
 		
-		if (newFile.length() == 0) {
+		if(newFile.length() == 0)
 			return bResult;
-		}
 		
 		if (!newFile.exists()) {
 			
@@ -349,16 +345,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 			outChannel = out.getChannel(); //채널을 열고
 			byteBuffer.compact(); //파일을 복사한다.
 			outChannel.write(byteBuffer); //파일을 쓴다.
-			
-			long bytes = outChannel.size();
-			
-			if(bytes == 0 || file.length() == 0) {
-				logger.info("Create 7Zip Byte 0");
-				return bResult;
-			} else {
-				logger.info("Create 7Zip Success");
-				bResult = true;
-			}
+			bResult = true;
 			
 		}catch(Exception e) {
 			e.printStackTrace();
