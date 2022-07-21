@@ -118,6 +118,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 					try {
 						
 						logger.error("File size 0byte StoreID :: {} ", fileName);
+						sendResponse(sess, "File size 0byte");
 						sess.close();
 			        	lists.remove(sess);
 			        	
