@@ -275,8 +275,14 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		jsonObj.addProperty("Result", 0);
 		
 		if(errorMsg != "") {
-			jsonObj.addProperty("Result", 1);
-			jsonObj.addProperty("MSG", errorMsg);
+			
+			if(errorMsg == "File size 0byte") {
+				jsonObj.addProperty("Result", 0);
+				jsonObj.addProperty("MSG", errorMsg);
+			} else {
+				jsonObj.addProperty("Result", 1);
+				jsonObj.addProperty("MSG", errorMsg);
+			}
 		}
 		
 		s.sendMessage(new TextMessage(jsonObj.toString()));
