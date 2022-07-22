@@ -252,7 +252,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 			        }
 			        
 				} else {
-					logger.error("File size 0byte StoreID :: {} ", fileName);
+					// 파일 크기가 0 바이트거나 폴더와 압축에 문제가 있을 때, 끝난다.
 				}	
 			}
 		}
