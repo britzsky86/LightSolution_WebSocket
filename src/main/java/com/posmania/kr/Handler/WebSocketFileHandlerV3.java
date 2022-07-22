@@ -121,7 +121,8 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 					else
 						bResult = false;
 					
-				} else {
+				} 
+				/*else {
 					
 					// 0byte의 초기데이터는 정상처리하고 세션을 끝낸다.
 					// UPDATE TbSyncAwsST SET StatusCD = 4 WHERE StoreID = FileName 로 저장해야 함.	
@@ -137,14 +138,12 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
+				}*/
 				
 				// 폴더 및 압축파일 생성이 모두 정상일 때, DB에 적용.
 				if(bResult) {
 					
 					List<String> fileList = new ArrayList<String>();
-					
-			        /*String folderPathV3 = firstPath+"\\"+fileName+"\\";*/
 					
 					String folderPathV3 = firstPath+"/"+fileName+"/";
 			        
@@ -261,7 +260,6 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				    		logger.error("Directory Delete Success StoreID :: ", storeID);
 				    	}
 			        }
-			        
 				}
 			}
 		}
@@ -311,10 +309,10 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		
 		boolean bResult = false;
 		
-		logger.error("File Lenght :: {} ", newFile.length());
+		/*logger.error("File Lenght :: {} ", newFile.length());
 		
 		if(newFile.length() == 0)
-			return bResult;
+			return bResult;*/
 		
 		if (!newFile.exists()) {
 			
