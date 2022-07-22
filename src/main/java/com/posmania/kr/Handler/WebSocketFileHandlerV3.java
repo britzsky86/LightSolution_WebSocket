@@ -101,6 +101,14 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				
 				List<String> errorList = new ArrayList<String>();
 				
+				// 파일명으로 StoreID를 구한다.
+				String storeID = fileName.replace(".7z", "");
+				
+				// UPDATE TbSyncAwsST SET StatusCD = 2 WHERE StoreID = FileName 로 저장해야 함. (업로드중)
+	    		// 최초등록이기 때문에 insert 해야 함.
+		        // 파일을 받는 시점에 동기화 상태를 넣어줘야 함.
+	    		syncAWS.syncAWSStatus(storeID, 2, null);
+				
 				if(createFolder(firstPath+"/")) {
 					
 					String folderPathV2 = firstPath+"/"+fileName+"/";
@@ -115,13 +123,18 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 					
 				} else {
 					
-					try {
+					// 0byte의 초기데이터는 정상처리하고 세션을 끝낸다.
+					// UPDATE TbSyncAwsST SET StatusCD = 4 WHERE StoreID = FileName 로 저장해야 함.	
+		    		syncAWS.syncAWSStatus(storeID, 4, null);
+		    		
+		    		try {
+		    			
 						sendResponse(sess, "File size 0byte");
 						sess.close();
 			        	lists.remove(sess);
-			        	
-					} catch (Exception e) {
-						// TODO: handle exception
+					
+		    		} catch (IOException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -159,8 +172,6 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 						}
 					}
 			        
-			        String storeID = fileName.replace(".7z", "");
-			        
 			        for(int j=0; j<fileList.size();j++) {
 			        	
 			        	String sqlFileName = fileList.get(j).toString();
@@ -177,10 +188,6 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				    		/*con = DriverManager.getConnection("jdbc:mysql://222.98.245.65:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&characterEncoding=utf8&serverTimezone=UTC","root", "pass_posmania4906!");*/
 				    		con = DriverManager.getConnection("jdbc:mysql://alphacashier-asp-db-instance.ctnru7tj6gzl.ap-northeast-2.rds.amazonaws.com:4406/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&characterEncoding=utf8&serverTimezone=UTC","admin", "pass_softlogic");
 				    		con.createStatement();
-				    		
-				    		// UPDATE TbSyncAwsST SET StatusCD = 2 WHERE StoreID = FileName 로 저장해야 함. (업로드중)
-				    		// 최초등록이기 때문에 insert 해야 함.
-				    		syncAWS.syncAWSStatus(storeID, 2, null);
 				    		
 				    		ScriptRunner scriptExecutor = new ScriptRunner(con);
 				    		
@@ -251,6 +258,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				    	}
 			        }
 			        
+			        
 				} else {
 					// 파일 크기가 0 바이트거나 폴더와 압축에 문제가 있을 때, 끝난다.
 				}	
@@ -302,7 +310,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		
 		boolean bResult = false;
 		
-		if(newFile.length() == 0)
+		if(newFile.length() == 0) 
 			return bResult;
 		
 		if (!newFile.exists()) {
