@@ -101,6 +101,14 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				
 				List<String> errorList = new ArrayList<String>();
 				
+				// 파일명으로 StoreID를 구한다.
+				String storeID = fileName.replace(".7z", "");
+				
+				// UPDATE TbSyncAwsST SET StatusCD = 2 WHERE StoreID = FileName 로 저장해야 함. (업로드중)
+	    		// 최초등록이기 때문에 insert 해야 함.
+		        // 파일을 받는 시점에 동기화 상태를 넣어줘야 함.
+	    		syncAWS.syncAWSStatus(storeID, 2, null);
+				
 				if(createFolder(firstPath+"/")) {
 					
 					String folderPathV2 = firstPath+"/"+fileName+"/";
@@ -115,13 +123,18 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 					
 				} else {
 					
-					try {
+					// 0byte의 초기데이터는 정상처리하고 세션을 끝낸다.
+					// UPDATE TbSyncAwsST SET StatusCD = 4 WHERE StoreID = FileName 로 저장해야 함.	
+		    		syncAWS.syncAWSStatus(storeID, 4, null);
+		    		
+		    		try {
+		    			
 						sendResponse(sess, "File size 0byte");
 						sess.close();
 			        	lists.remove(sess);
-			        	
-					} catch (Exception e) {
-						// TODO: handle exception
+					
+		    		} catch (IOException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -158,8 +171,6 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 							e1.printStackTrace();
 						}
 					}
-			        
-			        String storeID = fileName.replace(".7z", "");
 			        
 			        for(int j=0; j<fileList.size();j++) {
 			        	
@@ -251,9 +262,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				    	}
 			        }
 			        
-				} else {
-					logger.error("File size 0byte StoreID :: {} ", fileName);
-				}	
+				}
 			}
 		}
 	}
@@ -301,6 +310,8 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		File newFile = new File(path+""+fileName); 
 		
 		boolean bResult = false;
+		
+		logger.error("File Lenght :: {} ", newFile.length());
 		
 		if(newFile.length() == 0)
 			return bResult;
