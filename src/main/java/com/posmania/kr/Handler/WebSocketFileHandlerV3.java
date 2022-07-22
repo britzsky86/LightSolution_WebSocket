@@ -257,7 +257,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				    	}
 				    	
 				    	if(deleteDirectoryAndFiles(folderPathV3)) {	
-				    		logger.error("Directory Delete Success StoreID :: ", storeID);
+				    		logger.error("Directory Delete Success StoreID :: {} ", storeID);
 				    	}
 			        }
 				}
