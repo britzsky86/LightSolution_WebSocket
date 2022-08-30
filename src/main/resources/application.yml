@@ -3,7 +3,7 @@ spring:
     restart:
       enabled: true
   datasource:
-    url: jdbc:mysql://192.168.0.254:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
+    url: jdbc:mysql://222.98.245.65:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: admin
     password: pass_softlogic
