@@ -3,12 +3,12 @@ spring:
     restart:
       enabled: true
   datasource:
-    url: jdbc:mysql://alphacashier-asp-db-instance.ctnru7tj6gzl.ap-northeast-2.rds.amazonaws.com:4406/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
+    url: jdbc:mysql://192.168.0.254:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: admin
     password: pass_softlogic
     hikari:
-      maximumPoolSize: 1000
+      maximumPoolSize: 100
       connectionTestQuery: SELECT 1
   jpa:
     show-sql: true
@@ -38,4 +38,5 @@ server:
     context-path: /
     
     
+#url: jdbc:mysql://alphacashier-asp-db-instance.ctnru7tj6gzl.ap-northeast-2.rds.amazonaws.com:4406/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
 #url: jdbc:mysql://222.98.245.65:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
