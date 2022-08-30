@@ -8,7 +8,7 @@ spring:
     username: root
     password: pass_posmania4906!
     hikari:
-      maximumPoolSize: 100
+      maximumPoolSize: 20
       connectionTestQuery: SELECT 1
   jpa:
     show-sql: true
