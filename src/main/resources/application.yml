@@ -3,10 +3,10 @@ spring:
     restart:
       enabled: true
   datasource:
-    url: jdbc:mysql://222.98.245.65:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
+    url: jdbc:mysql://lightsolution-aws-db-instance.clvvluyg0a7d.ap-northeast-2.rds.amazonaws.com:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
     driver-class-name: org.mariadb.jdbc.Driver
-    username: root
-    password: pass_posmania4906!
+    username: admin
+    password: pass_softlogic
     hikari:
       maximumPoolSize: 20
       connectionTestQuery: SELECT 1
@@ -37,14 +37,22 @@ server:
   servlet:
     context-path: /
     
-    
+# 실서버 master
 #url: jdbc:mysql://alphacashier-asp-db-instance.ctnru7tj6gzl.ap-northeast-2.rds.amazonaws.com:4406/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
 #driver-class-name: com.mysql.cj.jdbc.Driver
 #username: admin
 #password: pass_softlogic
 
+# 사내 테스트 PC develop
 #url: jdbc:mysql://222.98.245.65:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
 #driver-class-name: org.mariadb.jdbc.Driver
 #username: root
 #password: pass_posmania4906!
+
+# AWS 사내 계정  develop
+#url: jdbc:mysql://lightsolution-aws-db-instance.clvvluyg0a7d.ap-northeast-2.rds.amazonaws.com:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&useUnicode=yes;
+#driver-class-name: com.mysql.cj.jdbc.Driver
+#username: admin
+#password: pass_softlogic
+
 
