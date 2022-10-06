@@ -212,7 +212,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					} catch (Exception e) {
 						// TODO: handle exception
 						logger.error("SyncID Controller Check(204) Error {}", e.getMessage());
-						jsonObject.addProperty("Result", 1);
+						jsonObject.addProperty("Result", 3);
 						jsonObject.addProperty("StatusCD", 0);
 						
 						resultStr = jsonObject.toString();

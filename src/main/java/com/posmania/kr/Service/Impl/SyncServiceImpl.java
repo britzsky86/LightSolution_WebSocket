@@ -41,7 +41,7 @@ public class SyncServiceImpl implements SyncService {
 			
 		} catch (Exception e) {
 			logger.error("SyncID Check(204) Error {}", e.getMessage());
-			jsonObject.addProperty("Result", 1);
+			jsonObject.addProperty("Result", 3);
 			jsonObject.addProperty("StatusCD", 0);
 		}
 		
