@@ -201,7 +201,22 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					
 					param.put("StoreID", storeID);
 					
-					String resultStr = sync.handleAction(session, param);
+					JsonObject jsonObject = new JsonObject();
+					
+					String resultStr = "";
+					
+					try {
+						
+						resultStr = sync.handleAction(session, param);
+						
+					} catch (Exception e) {
+						// TODO: handle exception
+						logger.error("SyncID Controller Check(204) Error {}", e.getMessage());
+						jsonObject.addProperty("Result", 0);
+						jsonObject.addProperty("StatusCD", 0);
+						
+						resultStr = jsonObject.toString();
+					}
 					
 					logger.info("SyncID Check(204) Result {}", resultStr);
 					
