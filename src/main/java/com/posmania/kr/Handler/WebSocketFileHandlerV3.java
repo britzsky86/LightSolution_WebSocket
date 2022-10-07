@@ -149,6 +149,10 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 			        
 			        try {
 						
+			        	// UPDATE TbSyncAwsST SET StatusCD = 2 WHERE StoreID = FileName 로 저장해야 함. (업로드중)
+			    		// 최초등록이기 때문에 insert 해야 함.
+			    		syncAWS.syncAWSStatus(storeID, 2, null);
+			        	
 			        	fileList = un7Zip(folderPathV3+fileName, folderPathV3);
 			        	
 			        	sendResponse(sess, "");
@@ -187,10 +191,6 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				    		/*con = DriverManager.getConnection("jdbc:mysql://222.98.245.65:3306/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&characterEncoding=utf8&serverTimezone=UTC","root", "pass_posmania4906!");*/
 				    		con = DriverManager.getConnection("jdbc:mysql://alphacashier-asp-db-instance.ctnru7tj6gzl.ap-northeast-2.rds.amazonaws.com:4406/PmKioskAWS?allowMultiQueries=true&useSSL=false&autoReconnect=true&characterEncoding=utf8&serverTimezone=UTC","admin", "pass_softlogic");
 				    		con.createStatement();
-				    		
-				    		// UPDATE TbSyncAwsST SET StatusCD = 2 WHERE StoreID = FileName 로 저장해야 함. (업로드중)
-				    		// 최초등록이기 때문에 insert 해야 함.
-				    		syncAWS.syncAWSStatus(storeID, 2, null);
 				    		
 				    		ScriptRunner scriptExecutor = new ScriptRunner(con);
 				    		
