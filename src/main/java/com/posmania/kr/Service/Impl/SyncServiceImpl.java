@@ -30,14 +30,25 @@ public class SyncServiceImpl implements SyncService {
 			
 			result = mapper.searchSyncStatus(param);
 			
-			BigInteger lastStoreSyncID = new BigInteger(result.get("LastStoreSyncID").toString());
-			BigInteger maxNewAwsSyncID = new BigInteger(result.get("MaxNewAwsSyncID").toString());
+			int iStatusCD = Integer.parseInt(result.get("StatusCD").toString());
 			
-			jsonObject.addProperty("Result", 0);
-			jsonObject.addProperty("StatusCD", Integer.parseInt(result.get("StatusCD").toString()));
-			jsonObject.addProperty("LastStoreSyncID", lastStoreSyncID);
-			jsonObject.addProperty("MaxNewAwsSyncID", maxNewAwsSyncID);
-			jsonObject.addProperty("MSG", result.get("Msg").toString());
+			if(iStatusCD == 0) {
+				
+				jsonObject.addProperty("Result", 0);
+				jsonObject.addProperty("StatusCD", Integer.parseInt(result.get("StatusCD").toString()));
+				
+			} else {
+				
+				BigInteger lastStoreSyncID = new BigInteger(result.get("LastStoreSyncID").toString());
+				BigInteger maxNewAwsSyncID = new BigInteger(result.get("MaxNewAwsSyncID").toString());
+				
+				jsonObject.addProperty("Result", 0);
+				jsonObject.addProperty("StatusCD", Integer.parseInt(result.get("StatusCD").toString()));
+				jsonObject.addProperty("LastStoreSyncID", lastStoreSyncID);
+				jsonObject.addProperty("MaxNewAwsSyncID", maxNewAwsSyncID);
+				jsonObject.addProperty("MSG", result.get("Msg").toString());	
+			
+			}
 			
 		} catch (Exception e) {
 			logger.error("SyncID Check(204) Error {}", e.getMessage());
