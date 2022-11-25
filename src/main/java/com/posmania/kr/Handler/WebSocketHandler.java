@@ -38,7 +38,7 @@ enum RequestType {
 	// SYNCID(204) 		동기화ID 확인(#20850)
 	// RESET(205) 		데이터 리셋 (#20851)
 	// NEW(206) 		데이터 생성
-	UPLOAD(201), DOWNLOAD(202), DATABASE(203), SYNCID(204), RESET(205), NEW(206); 
+	UPLOAD(201), DOWNLOAD(202), DATABASE(203), SYNCID(204), RESET(205), NEW(206), ADDRESS(207); 
 	
 	private final int value;
 	
@@ -278,6 +278,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						/*sess.close();*/
 						/*lists.remove(sess);*/
 					}
+				} else if(RequestType.ADDRESS.getValue() == iType) {
+					logger.info("AddressData(206) Start");
+					
+					
 				}
 			}
 		}	
