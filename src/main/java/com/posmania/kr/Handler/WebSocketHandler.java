@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.posmania.kr.Common.ResponseCodes;
+import com.posmania.kr.Controller.AddressController;
 import com.posmania.kr.Controller.DatabaseController;
 import com.posmania.kr.Controller.DownloadController;
 import com.posmania.kr.Controller.NewDataController;
@@ -38,7 +39,8 @@ enum RequestType {
 	// SYNCID(204) 		동기화ID 확인(#20850)
 	// RESET(205) 		데이터 리셋 (#20851)
 	// NEW(206) 		데이터 생성
-	UPLOAD(201), DOWNLOAD(202), DATABASE(203), SYNCID(204), RESET(205), NEW(206); 
+	// ADDRESS			배달주소 확인 (#24409)
+	UPLOAD(201), DOWNLOAD(202), DATABASE(203), SYNCID(204), RESET(205), NEW(206), ADDRESS(207); 
 	
 	private final int value;
 	
@@ -78,6 +80,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	
 	@Autowired
 	private ResetController reset;		// 매장별 리셋.
+	
+	@Autowired
+	private AddressController address;	// 배달주소 체크.
 	
 	Logger logger = LoggerFactory.getLogger(WebSocketHandler.class);
 	
@@ -201,6 +206,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					
 					param.put("StoreID", storeID);
 					
+					JsonObject jsonObject = new JsonObject();
+					
 					String resultStr = sync.handleAction(session, param);
 					
 					logger.info("SyncID Check(204) Result {}", resultStr);
@@ -275,6 +282,29 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						sess.sendMessage(new TextMessage(jsonObj.toString()));
 						/*sess.close();*/
 						/*lists.remove(sess);*/
+					}
+				} else if(RequestType.ADDRESS.getValue() == iType) {
+					
+					logger.info("AddressData(207) Start");
+					
+					result = address.handleAction(session, element);
+					
+					message = new TextMessage(result);
+					
+					try {
+						
+						logger.info("AddressData(207) Result {}", message);
+						// 전송.
+						sess.sendMessage(message);
+						/*sess.close();*/
+						/*lists.remove(sess);*/
+						
+						logger.info("AddressData(207) End");
+						
+					} catch (Exception e) {
+						
+						logger.error("AddressData(207) Error {} ", e.getMessage());
+						
 					}
 				}
 			}

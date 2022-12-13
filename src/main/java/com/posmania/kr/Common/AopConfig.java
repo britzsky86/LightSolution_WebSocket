@@ -64,7 +64,7 @@ public class AopConfig {
 			
 			JsonObject jsonObj = new JsonObject();
 			
-			jsonObj.addProperty("Result", 3);
+			jsonObj.addProperty("Result", 1);
 			jsonObj.addProperty("MSG", ex.getMessage());
 			
 			sessions.sendMessage(new TextMessage(jsonObj.toString()));
