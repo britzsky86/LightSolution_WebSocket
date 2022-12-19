@@ -11,4 +11,10 @@
 
 </select>
 
+<update id="resetAddress" parameterType="Map">
+  
+  	CALL PmKioskAWS.XUpdate_ResetAddr (${StoreID}, ${SaleID})
+
+</update>
+
 </mapper>

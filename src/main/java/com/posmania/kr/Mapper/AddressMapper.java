@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface AddressMapper {
 
 	Map<String, Object> searchAddress(Map<String, Object> param);
+	int resetAddress(Map<String, Object> param);
 }

@@ -65,4 +65,27 @@ public class AddressServiceImpl implements AddressService {
 		
 		return jsonObject.toString();
 	}
+	
+	
+	public String resetAddress(Map<String, Object> param, WebSocketSession session) {
+		// TODO Auto-generated method stub
+		
+		int result = 0;
+		JsonObject jsonObject = new JsonObject();
+		
+		try {
+			result = mapper.resetAddress(param);
+			
+			if (result > 0) {
+				jsonObject.addProperty("Result", 0);
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error("Address Check(208) Error {}", e.getMessage());
+			jsonObject.addProperty("Result", 3);
+		}
+		
+		return jsonObject.toString();
+	}
 }

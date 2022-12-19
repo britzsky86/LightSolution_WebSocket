@@ -40,7 +40,8 @@ enum RequestType {
 	// RESET(205) 		데이터 리셋 (#20851)
 	// NEW(206) 		데이터 생성
 	// ADDRESS			배달주소 확인 (#24409)
-	UPLOAD(201), DOWNLOAD(202), DATABASE(203), SYNCID(204), RESET(205), NEW(206), ADDRESS(207); 
+	// ADDRESS_RESET	배달주소 리셋 (#24695
+	UPLOAD(201), DOWNLOAD(202), DATABASE(203), SYNCID(204), RESET(205), NEW(206), ADDRESS(207), ADDRESS_RESET(208); 
 	
 	private final int value;
 	
@@ -283,6 +284,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						/*sess.close();*/
 						/*lists.remove(sess);*/
 					}
+					
 				} else if(RequestType.ADDRESS.getValue() == iType) {
 					
 					logger.info("AddressData(207) Start");
@@ -304,6 +306,29 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					} catch (Exception e) {
 						
 						logger.error("AddressData(207) Error {} ", e.getMessage());
+						
+					}
+				} else if(RequestType.ADDRESS_RESET.getValue() == iType) {
+					
+					logger.info("AddressRestData(208) Start");
+					
+					result = address.resetHandleAction(session, element);
+					
+					message = new TextMessage(result);
+					
+					try {
+						
+						logger.info("AddressRestData(208) Result {}", message);
+						// 전송.
+						sess.sendMessage(message);
+						/*sess.close();*/
+						/*lists.remove(sess);*/
+						
+						logger.info("AddressRestData(208) End");
+						
+					} catch (Exception e) {
+						
+						logger.error("AddressRestData(208) Error {} ", e.getMessage());
 						
 					}
 				}
