@@ -27,8 +27,8 @@ mybatis:
 cloud:
   aws:
     credentials:
-      accesskey: AKIA36XY6AUNW6W5FG6E
-      secretkey: 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   
+      accesskey: AKIASRYHCPCXQ6NVOCVJ
+      secretkey: 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  
     region:
       static: ap-northeast-2c
       
@@ -55,4 +55,18 @@ server:
 #username: admin
 #password: pass_softlogic
 
+
+
+#cloud:
+#  aws:
+#    credentials:
+#      accesskey: AKIA36XY6AUNW6W5FG6E
+#      secretkey: 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   
+#    region:
+#      static: ap-northeast-2c
+      
+#server:
+#  port: 13270
+#  servlet:
+#    context-path: /
 

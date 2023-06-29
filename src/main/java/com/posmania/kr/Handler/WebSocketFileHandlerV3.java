@@ -496,8 +496,8 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		// Result 2
 		JsonObject jsonObj = new JsonObject();
 		
-		jsonObj.addProperty("Result", ResponseCodes.FAIL_NETWORK.getCode());
-		jsonObj.addProperty("MSG", ResponseCodes.FAIL_NETWORK.getMessage());
+		jsonObj.addProperty("Result", 0);
+		jsonObj.addProperty("MSG", "Data Transport Error");
 		
 		for(WebSocketSession sess : lists) {
 			
