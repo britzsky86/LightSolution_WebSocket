@@ -111,16 +111,20 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				
 				if(createFolder(firstPath+"/")) {
 					
+					logger.error("Folder Create Start :: ", storeID);
+					
 					String folderPathV2 = firstPath+"/"+fileName+"/";
 					
 					File file = new File(folderPathV2+fileName);
 					
 					// 압축파일 생성.
-					if(create7Zip(byteBuffer, file)) 
+					if(create7Zip(byteBuffer, file)) {
+						logger.error("7Zip Create Start :: ", storeID);
 						bResult = true;
-					else
+					} else {
+						
 						bResult = false;
-					
+					}
 				} 
 				/*else {
 					
@@ -142,6 +146,8 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 				
 				// 폴더 및 압축파일 생성이 모두 정상일 때, DB에 적용.
 				if(bResult) {
+					
+					logger.error("Database Start :: ", storeID);
 					
 					List<String> fileList = new ArrayList<String>();
 					
@@ -365,7 +371,8 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 			e.printStackTrace();
 			
 			bResult = false;
-			logger.info("Create 7Zip Failed");
+			
+			logger.error("7Zip Create Fail :: {}", e);
 			
 		}finally {
 			try {
@@ -496,7 +503,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 		// Result 2
 		JsonObject jsonObj = new JsonObject();
 		
-		jsonObj.addProperty("Result", 0);
+		jsonObj.addProperty("Result", 2);
 		jsonObj.addProperty("MSG", "Data Transport Error");
 		
 		for(WebSocketSession sess : lists) {
