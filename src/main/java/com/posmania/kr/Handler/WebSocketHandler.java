@@ -29,6 +29,7 @@ import com.posmania.kr.Controller.NewDataController;
 import com.posmania.kr.Controller.ResetController;
 import com.posmania.kr.Controller.SyncAWSController;
 import com.posmania.kr.Controller.SyncController;
+import com.posmania.kr.Controller.TodayResetController;
 import com.posmania.kr.Controller.UploadController;
 
 enum RequestType { 
@@ -40,8 +41,9 @@ enum RequestType {
 	// RESET(205) 		데이터 리셋 (#20851)
 	// NEW(206) 		데이터 생성
 	// ADDRESS			배달주소 확인 (#24409)
-	// ADDRESS_RESET	배달주소 리셋 (#24695
-	UPLOAD(201), DOWNLOAD(202), DATABASE(203), SYNCID(204), RESET(205), NEW(206), ADDRESS(207), ADDRESS_RESET(208); 
+	// ADDRESS_RESET	배달주소 리셋 (#24695)
+	// TODAY_RESET		당일자 리셋 (#25656)
+	UPLOAD(201), DOWNLOAD(202), DATABASE(203), SYNCID(204), RESET(205), NEW(206), ADDRESS(207), ADDRESS_RESET(208), TODAY_RESET(209); 
 	
 	private final int value;
 	
@@ -84,6 +86,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	
 	@Autowired
 	private AddressController address;	// 배달주소 체크.
+	
+	@Autowired
+	private TodayResetController today;	// 당일리셋
 	
 	Logger logger = LoggerFactory.getLogger(WebSocketHandler.class);
 	
@@ -329,6 +334,29 @@ public class WebSocketHandler extends TextWebSocketHandler {
 					} catch (Exception e) {
 						
 						logger.error("AddressRestData(208) Error {} ", e.getMessage());
+						
+					}
+				} else if(RequestType.TODAY_RESET.getValue() == iType) {
+					
+					logger.info("TodayResetData(209) Start");
+					
+					result = today.resetHandleAction(session, element);
+					
+					message = new TextMessage(result);
+					
+					try {
+						
+						logger.info("TodayResetData(209) Result {}", message);
+						// 전송.
+						sess.sendMessage(message);
+						/*sess.close();*/
+						/*lists.remove(sess);*/
+						
+						logger.info("AddressRestData(209) End");
+						
+					} catch (Exception e) {
+						
+						logger.error("TodayResetData(209) Error {} ", e.getMessage());
 						
 					}
 				}
