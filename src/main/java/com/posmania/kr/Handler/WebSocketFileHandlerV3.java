@@ -116,10 +116,12 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 					File file = new File(folderPathV2+fileName);
 					
 					// 압축파일 생성.
-					if(create7Zip(byteBuffer, file)) 
+					if(create7Zip(byteBuffer, file)) {
 						bResult = true;
-					else
+					} else {
+						logger.error("fail createFolder - StoreID :: {}, byteBuffer :: {}", storeID, byteBuffer);
 						bResult = false;
+					}
 					
 				} 
 				/*else {
@@ -155,6 +157,10 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 			        	
 			        	fileList = un7Zip(folderPathV3+fileName, folderPathV3);
 			        	
+			        	if (fileList.size() == 0) {
+			        		logger.error("un7Zip to fileList zero - StoreID :: {}, byteBuffer :: {}", storeID, byteBuffer);
+			        	}
+			        	
 			        	sendResponse(sess, "");
 			        	sess.close();
 			        	lists.remove(sess);
@@ -164,6 +170,7 @@ public class WebSocketFileHandlerV3 extends TextWebSocketHandler {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 						try {
+							logger.error("un7Zip fail to catch - StoreID :: {}, fileList size :: {}", storeID, fileList.size());
 							
 							sendResponse(sess, e.toString());
 							sess.close();

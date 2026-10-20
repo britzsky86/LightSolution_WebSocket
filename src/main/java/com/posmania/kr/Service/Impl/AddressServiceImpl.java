@@ -47,6 +47,8 @@ public class AddressServiceImpl implements AddressService {
 				jsonObject.addProperty("Addr", result.get("Addr").toString());
 				jsonObject.addProperty("AddrDetail", result.get("AddrDetail").toString());
 				jsonObject.addProperty("DeliveryMemo", result.get("DeliveryMemo").toString());
+				jsonObject.addProperty("OrdererName", result.get("OrdererName").toString());
+				jsonObject.addProperty("OrdererEncNumber", result.get("OrdererEncNumber").toString());
 				
 			} else {
 				
