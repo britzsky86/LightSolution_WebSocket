@@ -179,15 +179,22 @@ health "$NEW_PID" 20 || fail "신규 서비스 검증 실패 (로그: $NEW_LOG)"
 COMMITTED=1
 log "배포 성공: PID $NEW_PID"
 
-# 최근 자동 백업 2개만 유지합니다. 수동 백업/운영 JAR은 건드리지 않습니다.
-mapfile -d '' backups < <(find "$BACKUP_DIR" -maxdepth 1 -type f -name 'backup-*.jar' -printf '%f\0' | sort -zr)
-if (( ${#backups[@]} > 2 )); then
-  for name in "${backups[@]:2}"; do
-    # 현재 링크 대상은 삭제하지 않습니다.
+# 최근 자동 백업 2개만 유지합니다.
+# 구버전 Bash에서도 동작하도록 mapfile -d를 사용하지 않습니다.
+BACKUP_COUNT=0
+
+while IFS= read -r name; do
+  BACKUP_COUNT=$((BACKUP_COUNT + 1))
+
+  if (( BACKUP_COUNT > 2 )); then
     if [[ "$(readlink -f "$APP_LINK")" != "$BACKUP_DIR/$name" ]]; then
       rm -f -- "$BACKUP_DIR/$name" || log "WARNING: 백업 정리 실패: $name"
     fi
-  done
-fi
+  fi
+done < <(
+  find "$BACKUP_DIR" -maxdepth 1 -type f -name 'backup-*.jar' -printf '%f\n' |
+  sort -r
+)
+
 log '배포 종료'
 exit 0
