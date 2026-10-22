@@ -68,7 +68,8 @@ link_to() {
 }
 start_app() {
   local logfile="$1"
-  nohup "$JAVA" -Xms2048m -Xmx8192m -jar "$APP_LINK" > "$logfile" 2>&1 < /dev/null &
+  nohup "$JAVA" -Xms2048m -Xmx8192m -jar "$APP_LINK" \
+    > "$logfile" 2>&1 < /dev/null 9>&- &
   STARTED_PID=$!
 }
 rollback() {
@@ -117,7 +118,7 @@ trap 'exit 130' INT
 trap 'exit 143' TERM
 
 mkdir -p "$BACKUP_DIR" "$RELEASE_DIR" "$LOG_DIR" || fail '작업 폴더 생성 실패'
-exec 9>"$BASE/deploy.lock" || fail '잠금 파일 열기 실패'
+exec 9>"$BASE/deploy-v2.lock" || fail '잠금 파일 열기 실패'
 flock -n 9 || fail '다른 배포가 진행 중입니다.'
 log '안전 배포 시작'
 for cmd in sudo ss curl ps readlink find cp sha256sum mktemp flock grep cut sort mv ln tr rm chmod; do
