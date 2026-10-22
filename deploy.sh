@@ -80,8 +80,12 @@ rollback() {
     stop_app "$NEW_PID" || { log 'ERROR: 신규 프로세스 종료 실패'; return 1; }
   fi
   if [[ -n "$OLD_PID" ]] && alive "$OLD_PID"; then
-    log '기존 프로세스가 아직 실행 중입니다. 중복 실행하지 않습니다.'
-    return 0
+    if health "$OLD_PID" 3; then
+      log '기존 프로세스 정상 응답 확인. 중복 실행하지 않습니다.'
+      return 0
+    fi
+    log 'ERROR: 기존 프로세스가 살아 있지만 정상 응답하지 않습니다. 포트 충돌 방지를 위해 재실행하지 않습니다.'
+    return 1
   fi
   [[ -s "$BACKUP_FILE" ]] || { log 'ERROR: 복구 백업 파일 없음'; return 1; }
   link_to "$BACKUP_FILE" || return 1
@@ -97,6 +101,7 @@ rollback() {
 on_exit() {
   local status="$1"
   trap - EXIT INT TERM
+  if (( COMMITTED == 0 && status == 0 )); then status=1; fi
   if (( COMMITTED == 0 && SERVICE_STOPPED == 1 )); then
     rollback || log 'ERROR: 자동 롤백 실패 - 수동 확인 필요'
   fi
@@ -115,7 +120,7 @@ mkdir -p "$BACKUP_DIR" "$RELEASE_DIR" "$LOG_DIR" || fail '작업 폴더 생성 �
 exec 9>"$BASE/deploy.lock" || fail '잠금 파일 열기 실패'
 flock -n 9 || fail '다른 배포가 진행 중입니다.'
 log '안전 배포 시작'
-for cmd in sudo ss curl ps readlink find cp sha256sum mktemp flock grep cut sort mv ln java; do
+for cmd in sudo ss curl ps readlink find cp sha256sum mktemp flock grep cut sort mv ln tr rm chmod; do
   command -v "$cmd" >/dev/null 2>&1 || fail "필수 명령어 없음: $cmd"
 done
 sudo -n ss -H -lntp "( sport = :$PORT )" >/dev/null 2>&1 || fail '포트 조회 권한 없음'
@@ -146,6 +151,7 @@ done
 [[ "$OLD_JAR" == "$BASE/"* ]] || fail '기존 프로세스 JAR 경로가 허용 범위 밖입니다.'
 OLD_JAR=$(readlink -f "$OLD_JAR") || fail '기존 JAR 실경로 확인 실패'
 [[ -s "$OLD_JAR" ]] || fail '기존 운영 JAR이 없습니다.'
+[[ "$cmdline" == *java* && "$cmdline" == *-jar* ]] || fail '포트 점유 프로세스가 Java JAR 실행이 아닙니다.'
 health "$OLD_PID" 1 || fail '기존 서비스 HTTP 200 검증 실패'
 log "현재 운영 확인: PID $OLD_PID / $OLD_JAR"
 
@@ -159,11 +165,12 @@ cp -- "$BUILD_JAR" "$NEW_JAR" || fail '신규 JAR 복사 실패'
 [[ "$(sha256sum "$BUILD_JAR" | cut -d' ' -f1)" == "$(sha256sum "$NEW_JAR" | cut -d' ' -f1)" ]] || fail '신규 JAR 체크섬 불일치'
 NEW_LOG="$LOG_DIR/start-$(date +%Y%m%d%H%M%S)-$$.log"
 
-# 기존 프로세스를 종료한 후에만 서비스 링크를 교체합니다.
+# 종료 신호를 보내기 전에 롤백 보호를 활성화합니다.
+# 종료 대기 시간이 초과된 뒤 프로세스가 늦게 종료되는 경우도 복구 대상입니다.
+SERVICE_STOPPED=1
 if ! stop_app "$OLD_PID"; then
   fail '기존 서비스 정상 종료 실패 (강제 종료하지 않음)'
 fi
-SERVICE_STOPPED=1
 link_to "$NEW_JAR" || fail '신규 JAR 링크 변경 실패'
 start_app "$NEW_LOG"
 NEW_PID="$STARTED_PID"
