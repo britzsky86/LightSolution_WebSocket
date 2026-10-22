@@ -126,3 +126,61 @@ source "$ENV_FILE" || fail '환경변수 로드 실패'
 set +a
 for key in DB_URL DB_USERNAME DB_PASSWORD AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY; do
   [[ -n "${!key:-}" ]] || fail "환경변수 누락: $key"
+done
+
+mapfile -t jars < <(find "$BUILD_DIR" -maxdepth 1 -type f -name '*.jar' -print)
+[[ ${#jars[@]} -eq 1 ]] || fail '빌드 JAR이 정확히 1개여야 합니다.'
+BUILD_JAR="${jars[0]}"
+[[ -s "$BUILD_JAR" ]] || fail '빌드 JAR이 비어 있습니다.'
+
+# 포트를 실제로 점유한 Java 프로세스가 기존 서비스의 기준입니다.
+OLD_PID=$(port_pids)
+[[ "$OLD_PID" =~ ^[0-9]+$ ]] || fail '13270 포트 점유 PID가 정확히 1개가 아닙니다.'
+alive "$OLD_PID" || fail '기존 서비스 프로세스가 실행 중이지 않습니다.'
+cmdline=$(tr '\0' '\n' < "/proc/$OLD_PID/cmdline") || fail '기존 실행 명령 확인 실패'
+mapfile -t args < <(printf '%s\n' "$cmdline")
+OLD_JAR=""
+for ((i=0; i<${#args[@]}-1; i++)); do
+  if [[ "${args[i]}" == '-jar' ]]; then OLD_JAR="${args[i+1]}"; break; fi
+done
+[[ "$OLD_JAR" == "$BASE/"* ]] || fail '기존 프로세스 JAR 경로가 허용 범위 밖입니다.'
+OLD_JAR=$(readlink -f "$OLD_JAR") || fail '기존 JAR 실경로 확인 실패'
+[[ -s "$OLD_JAR" ]] || fail '기존 운영 JAR이 없습니다.'
+health "$OLD_PID" 1 || fail '기존 서비스 HTTP 200 검증 실패'
+log "현재 운영 확인: PID $OLD_PID / $OLD_JAR"
+
+BACKUP_FILE="$BACKUP_DIR/backup-$(date +%Y%m%d%H%M%S)-$$.jar"
+cp -- "$OLD_JAR" "$BACKUP_FILE" || fail '정상 버전 백업 실패'
+[[ "$(sha256sum "$OLD_JAR" | cut -d' ' -f1)" == "$(sha256sum "$BACKUP_FILE" | cut -d' ' -f1)" ]] || fail '백업 체크섬 불일치'
+log "정상 버전 백업: $BACKUP_FILE"
+
+NEW_JAR=$(mktemp "$RELEASE_DIR/release-$(date +%Y%m%d%H%M%S)-XXXXXXXX.jar") || fail '신규 JAR 생성 실패'
+cp -- "$BUILD_JAR" "$NEW_JAR" || fail '신규 JAR 복사 실패'
+[[ "$(sha256sum "$BUILD_JAR" | cut -d' ' -f1)" == "$(sha256sum "$NEW_JAR" | cut -d' ' -f1)" ]] || fail '신규 JAR 체크섬 불일치'
+NEW_LOG="$LOG_DIR/start-$(date +%Y%m%d%H%M%S)-$$.log"
+
+# 기존 프로세스를 종료한 후에만 서비스 링크를 교체합니다.
+if ! stop_app "$OLD_PID"; then
+  fail '기존 서비스 정상 종료 실패 (강제 종료하지 않음)'
+fi
+SERVICE_STOPPED=1
+link_to "$NEW_JAR" || fail '신규 JAR 링크 변경 실패'
+start_app "$NEW_LOG"
+NEW_PID="$STARTED_PID"
+log "신규 프로세스 시작: PID $NEW_PID"
+health "$NEW_PID" 20 || fail "신규 서비스 검증 실패 (로그: $NEW_LOG)"
+COMMITTED=1
+log "배포 성공: PID $NEW_PID"
+
+# 최근 자동 백업 2개만 유지합니다. 수동 백업/운영 JAR은 건드리지 않습니다.
+mapfile -d '' backups < <(find "$BACKUP_DIR" -maxdepth 1 -type f -name 'backup-*.jar' -printf '%f\0' | sort -zr)
+if (( ${#backups[@]} > 2 )); then
+  for name in "${backups[@]:2}"; do
+    # 현재 링크 대상은 삭제하지 않습니다.
+    if [[ "$(readlink -f "$APP_LINK")" != "$BACKUP_DIR/$name" ]]; then
+      rm -f -- "$BACKUP_DIR/$name" || log "WARNING: 백업 정리 실패: $name"
+    fi
+  done
+fi
+log '배포 종료'
+exit 0
