@@ -3,6 +3,13 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/build
+permissions:
+  - object: /home/ec2-user/build/deploy.sh
+    mode: 755
+    owner: ec2-user
+    group: ec2-user
+    type:
+      - file
 hooks:
   ApplicationStart:
     - location: deploy.sh
